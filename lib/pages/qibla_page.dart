@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/app_colors.dart';
 import '../providers/prayer_times_provider.dart';
+import '../providers/qibla_provider.dart';
 
 class QiblaPage extends StatefulWidget {
   const QiblaPage({super.key});
@@ -24,21 +26,22 @@ class _QiblaPageState extends State<QiblaPage> {
             children: [
               _buildHeader(),
               Expanded(
-                child: FutureBuilder(
-                  future: FlutterQiblah.androidDeviceSensorSupport(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                child: Consumer<QiblaProvider>(
+                  builder: (context, qiblaProvider, child) {
+                    if (qiblaProvider.isLoading) {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
 
-                    if (snapshot.hasError) {
-                      return _buildErrorWidget('Error checking device support');
+                    if (qiblaProvider.error != null) {
+                      return _buildErrorWidget(qiblaProvider.error!);
                     }
 
-                    if (snapshot.data == true) {
+                    if (qiblaProvider.isQiblaServiceSupported) {
                       return _buildQiblaCompass();
+                    } else if (qiblaProvider.hasValidQiblaData) {
+                      return _buildManualQiblaCompass();
                     } else {
                       return _buildUnsupportedDevice();
                     }
@@ -54,7 +57,7 @@ class _QiblaPageState extends State<QiblaPage> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         children: [
           Text(
@@ -64,7 +67,7 @@ class _QiblaPageState extends State<QiblaPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Point your device towards the Kaaba',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -72,7 +75,7 @@ class _QiblaPageState extends State<QiblaPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Consumer<PrayerTimesProvider>(
             builder: (context, provider, child) {
               return Container(
@@ -443,6 +446,196 @@ class _QiblaPageState extends State<QiblaPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildManualQiblaCompass() {
+    return Consumer<QiblaProvider>(
+      builder: (context, qiblaProvider, child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 300.w,
+              height: 300.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: AppColors.primaryGradient,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryPink.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Compass background
+                  Container(
+                    width: 280.w,
+                    height: 280.w,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Stack(
+                      children: [
+                        // Compass markings
+                        ...List.generate(36, (index) {
+                          final angle = index * 10.0;
+                          final isMainDirection = angle % 90 == 0;
+                          return Transform.rotate(
+                            angle: angle * (3.14159 / 180),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: isMainDirection ? 3.w : 1.w,
+                                height: isMainDirection ? 30.h : 15.h,
+                                margin: EdgeInsets.only(top: 10.h),
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          );
+                        }),
+                        // Direction labels
+                        Positioned(
+                          top: 20.h,
+                          left: 0,
+                          right: 0,
+                          child: Text(
+                            'N',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.deepPurple,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Qibla indicator (static for manual mode)
+                  if (qiblaProvider.manualQiblaDirection != null)
+                    Transform.rotate(
+                      angle: qiblaProvider.manualQiblaDirection! * (3.14159 / 180),
+                      child: Container(
+                        width: 4.w,
+                        height: 120.h,
+                        decoration: BoxDecoration(
+                          color: AppColors.islamicGreen,
+                          borderRadius: BorderRadius.circular(2.r),
+                        ),
+                      ),
+                    ),
+                  // Center circle with Kaaba icon
+                  Container(
+                    width: 60.w,
+                    height: 60.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.islamicGold,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.islamicGold.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.place,
+                      color: Colors.white,
+                      size: 30.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 32.h),
+            Container(
+              padding: EdgeInsets.all(20.w),
+              margin: EdgeInsets.symmetric(horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(16.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Qibla Direction (Manual)',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.deepPurple,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildInfoItem(
+                        'Direction',
+                        qiblaProvider.getQiblaDirectionText(),
+                        Icons.explore,
+                      ),
+                      _buildInfoItem(
+                        'Distance',
+                        qiblaProvider.getDistanceText(),
+                        Icons.straighten,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 32.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              margin: EdgeInsets.symmetric(horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: AppColors.islamicGreen.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: AppColors.islamicGreen.withOpacity(0.3),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: AppColors.islamicGreen,
+                    size: 24.sp,
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    'Manual Mode',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.islamicGreen,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    'Face the direction shown by the green line to face the Qibla. This is calculated based on your location.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.islamicGreen,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

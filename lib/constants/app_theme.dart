@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
 
 class AppTheme {
@@ -16,48 +17,48 @@ class AppTheme {
       brightness: Brightness.light,
     ),
     
-    // Text theme with Poppins font
+    // Text theme with Poppins font (responsive)
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
       displayLarge: GoogleFonts.poppins(
-        fontSize: 32,
+        fontSize: 32.sp,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
       displayMedium: GoogleFonts.poppins(
-        fontSize: 28,
+        fontSize: 28.sp,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
       headlineLarge: GoogleFonts.poppins(
-        fontSize: 24,
+        fontSize: 24.sp,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
       headlineMedium: GoogleFonts.poppins(
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
       titleLarge: GoogleFonts.poppins(
-        fontSize: 18,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w500,
         color: AppColors.textPrimary,
       ),
       titleMedium: GoogleFonts.poppins(
-        fontSize: 16,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w500,
         color: AppColors.textPrimary,
       ),
       bodyLarge: GoogleFonts.poppins(
-        fontSize: 16,
+        fontSize: 16.sp,
         color: AppColors.textPrimary,
       ),
       bodyMedium: GoogleFonts.poppins(
-        fontSize: 14,
+        fontSize: 14.sp,
         color: AppColors.textSecondary,
       ),
       bodySmall: GoogleFonts.poppins(
-        fontSize: 12,
+        fontSize: 12.sp,
         color: AppColors.textSecondary,
       ),
     ),
@@ -68,7 +69,7 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       foregroundColor: AppColors.textPrimary,
       titleTextStyle: GoogleFonts.poppins(
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
@@ -79,7 +80,7 @@ class AppTheme {
       elevation: 8,
       shadowColor: AppColors.primaryPink.withOpacity(0.2),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       color: AppColors.cardLight,
     ),
@@ -90,11 +91,11 @@ class AppTheme {
         elevation: 4,
         shadowColor: AppColors.primaryPink.withOpacity(0.3),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         textStyle: GoogleFonts.poppins(
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -108,11 +109,11 @@ class AppTheme {
       type: BottomNavigationBarType.fixed,
       elevation: 8,
       selectedLabelStyle: GoogleFonts.poppins(
-        fontSize: 12,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w500,
       ),
       unselectedLabelStyle: GoogleFonts.poppins(
-        fontSize: 12,
+        fontSize: 12.sp,
       ),
     ),
     

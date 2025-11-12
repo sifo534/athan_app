@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/hijri_calendar.dart';
 import '../constants/app_colors.dart';
 import '../providers/prayer_times_provider.dart';
@@ -8,6 +9,8 @@ import '../widgets/prayer_time_card.dart';
 import '../widgets/next_prayer_card.dart';
 import '../widgets/islamic_greeting_card.dart';
 import '../widgets/mosque_silhouette.dart';
+import '../widgets/qibla_quick_access.dart';
+import '../utils/navigation_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,20 +40,24 @@ class _HomePageState extends State<HomePage> {
             onRefresh: () => context.read<PrayerTimesProvider>().refreshPrayerTimes(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   const IslamicGreetingCard(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   const NextPrayerCard(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
+                  QiblaQuickAccess(
+                    onTap: () => _navigateToQibla(),
+                  ),
+                  SizedBox(height: 20.h),
                   _buildPrayerTimesSection(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _buildNewsSection(),
-                  const SizedBox(height: 100), // Bottom padding for navigation
+                  SizedBox(height: 100.h), // Bottom padding for navigation
                 ],
               ),
             ),
@@ -293,5 +300,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
+  }
+
+  void _navigateToQibla() {
+    NavigationHelper().navigateToQibla();
   }
 }

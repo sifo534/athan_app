@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/app_colors.dart';
 import '../models/prayer_times.dart';
 
@@ -17,7 +18,7 @@ class PrayerTimeCard extends StatelessWidget {
     final isPassed = prayerTime.time.isBefore(now);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         gradient: isCurrentPrayer 
             ? AppColors.primaryGradient 
@@ -25,7 +26,7 @@ class PrayerTimeCard extends StatelessWidget {
         color: isCurrentPrayer 
             ? null 
             : Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: isCurrentPrayer 
@@ -39,22 +40,22 @@ class PrayerTimeCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 50,
-            height: 50,
+            width: 50.w,
+            height: 50.w,
             decoration: BoxDecoration(
               color: isCurrentPrayer 
                   ? Colors.white.withOpacity(0.2)
                   : AppColors.primaryPink.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Center(
               child: Text(
                 prayerTime.icon,
-                style: const TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24.sp),
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
