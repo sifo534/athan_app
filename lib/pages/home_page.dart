@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:hijri/hijri.dart';
+import '../utils/hijri_calendar.dart';
 import '../constants/app_colors.dart';
 import '../providers/prayer_times_provider.dart';
 import '../widgets/prayer_time_card.dart';
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildHeader() {
     final now = DateTime.now();
-    final hijriDate = HijriCalendar.fromDate(now);
+    final hijriDate = HijriDate.fromGregorian(now);
     final gregorianDate = DateFormat('EEEE, MMMM d, y').format(now);
     
     return Consumer<PrayerTimesProvider>(
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${hijriDate.hDay} ${hijriDate.longMonthName} ${hijriDate.hYear} AH',
+                    hijriDate.formattedDate,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.white.withOpacity(0.9),
                     ),
